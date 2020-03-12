@@ -61,6 +61,10 @@ def gban(bot: Bot, update: Update, args: List[str]):
     if not user_id:
         message.reply_text("You don't seem to be referring to a user.")
         return
+    
+    if user_id == OWNER_ID:
+        message.reply_text("I'm not going to Gban my master nice try nigga.")
+        return
 
     if int(user_id) in DEV_USERS:
         message.reply_text("There is no way I can gban this user.")
@@ -128,7 +132,7 @@ def gban(bot: Bot, update: Update, args: List[str]):
 
     log_message = "#GBANNED" \
                   "\n<b>Originated from:</b> {}" \
-                  "\n<b>Admin:</b> {}" \
+                  "\n<b>Bot-Admin:</b> {}" \
                   "\n<b>Banned User:</b> {}" \
                   "\n<b>Banned User ID:</b> {}" \
                   "\n<b>Event Stamp:</b> {}".format(chat_origin,
@@ -153,7 +157,7 @@ def gban(bot: Bot, update: Update, args: List[str]):
             log = bot.send_message(GBAN_LOGS, log_message + "\n\nFormatting has been disabled due to an unexpected error.")
 
     else:
-        send_to_list(bot, SUDO_USERS + SUPPORT_USERS, log_message, html=True)
+        send_to_list(bot, SUDO_USERS + SUPPORT_USERS + DEV_USERS, log_message, html=True)
 
     sql.gban_user(user_id, user_chat.username or user_chat.first_name, reason)
 
@@ -179,7 +183,7 @@ def gban(bot: Bot, update: Update, args: List[str]):
                 if GBAN_LOGS:
                     bot.send_message(GBAN_LOGS, "Could not gban due to {}".format(excp.message), parse_mode=ParseMode.HTML)
                 else:
-                    send_to_list(bot, SUDO_USERS + SUPPORT_USERS, "Could not gban due to: {}".format(excp.message))
+                    send_to_list(bot, SUDO_USERS + SUPPORT_USERS + DEV_USERS, "Could not gban due to: {}".format(excp.message))
                 sql.ungban_user(user_id)
                 return
         except TelegramError:
@@ -188,7 +192,7 @@ def gban(bot: Bot, update: Update, args: List[str]):
     if GBAN_LOGS:
         log.edit_text(log_message + "\n<b>Chats affected:</b> {}".format(gbanned_chats), parse_mode=ParseMode.HTML)
     else:
-        send_to_list(bot, SUDO_USERS + SUPPORT_USERS, "Gban complete! (User banned in {} chats)".format(gbanned_chats))
+        send_to_list(bot, SUDO_USERS + SUPPORT_USERS + DEV_USERS, "Gban complete! (User banned from {} chats)".format(gbanned_chats))
     
     end_time = time.time()
     gban_time = round((end_time - start_time), 2)
@@ -200,7 +204,7 @@ def gban(bot: Bot, update: Update, args: List[str]):
         message.reply_text("Done! This gban affected {} chats, Took {} sec".format(gbanned_chats, gban_time))
 
     try:
-        bot.send_message(user_id, "You have been globally banned from all groups where I have administrative permissions. If you think that this was a mistake, you may appeal your ban here: @OnePunchSupport", parse_mode=ParseMode.HTML)
+        bot.send_message(user_id, "You have been globally banned from all groups where I'm appoint as Admin. If you think that this was a mistake, you may appeal for Ungban requet here: @OnePunchSupport", parse_mode=ParseMode.HTML)
     except:
         pass # bot probably blocked by user
 
@@ -244,9 +248,9 @@ def ungban(bot: Bot, update: Update, args: List[str]):
 
     log_message = "#UNGBANNED" \
                   "\n<b>Originated from:</b> {}" \
-                  "\n<b>Admin:</b> {}" \
-                  "\n<b>Unbanned User:</b> {}" \
-                  "\n<b>Unbanned User ID:</b> {}" \
+                  "\n<b>Bot-Admin:</b> {}" \
+                  "\n<b>Ungbanned User:</b> {}" \
+                  "\n<b>Ungbanned User ID:</b> {}" \
                   "\n<b>Event Stamp:</b> {}".format(chat_origin,
                                                     mention_html(user.id, user.first_name),
                                                     mention_html(user_chat.id, user_chat.first_name),
@@ -259,7 +263,7 @@ def ungban(bot: Bot, update: Update, args: List[str]):
         except BadRequest as excp:
             log = bot.send_message(GBAN_LOGS, log_message + "\n\nFormatting has been disabled due to an unexpected error.")
     else:
-        send_to_list(bot, SUDO_USERS + SUPPORT_USERS, log_message, html=True)
+        send_to_list(bot, SUDO_USERS + SUPPORT_USERS + DEV_USERS, log_message, html=True)
 
     chats = get_all_chats()
     ungbanned_chats = 0
@@ -295,7 +299,7 @@ def ungban(bot: Bot, update: Update, args: List[str]):
     if GBAN_LOGS:
         log.edit_text(log_message + "\n<b>Chats affected:</b> {}".format(ungbanned_chats), parse_mode=ParseMode.HTML)
     else:
-        send_to_list(bot, SUDO_USERS + SUPPORT_USERS, "un-gban complete!")
+        send_to_list(bot, SUDO_USERS + SUPPORT_USERS + DEV_USERS, "un-gban complete!")
 
     end_time = time.time()
     ungban_time = round((end_time - start_time), 2)
