@@ -133,8 +133,8 @@ def gban(bot: Bot, update: Update, args: List[str]):
     log_message = "#GBANNED" \
                   "\n<b>Originated from:</b> {}" \
                   "\n<b>Bot-Admin:</b> {}" \
-                  "\n<b>Banned User:</b> {}" \
-                  "\n<b>Banned User ID:</b> {}" \
+                  "\n<b>GBanned User:</b> {}" \
+                  "\n<b>GBanned User ID:</b> {}" \
                   "\n<b>Event Stamp:</b> {}".format(chat_origin,
                                                     mention_html(user.id, user.first_name),
                                                     mention_html(user_chat.id, user_chat.first_name),
